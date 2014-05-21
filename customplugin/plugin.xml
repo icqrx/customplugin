@@ -15,6 +15,13 @@
             id="customplugin.wizard.new.custom"
             name="RmCRC MEAP Project">
       </wizard>
+      <wizard
+            category="customplugin.category.wizards"
+            class="customplugin.wizards.LayoutWizardManager"
+            icon="icon/file_xml.png"
+            id="customplugin.wizards.LayoutWizard"
+            name="Layout Editor file">
+      </wizard>
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">
@@ -35,6 +42,15 @@
                ratio="0.25"
                relationship="left"
                relative="org.eclipse.ui.editorss">
+         </view>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="org.eclipse.jdt.ui.JavaPerspective">
+         <view
+               id="customplugin.views.CustomViewer"
+               ratio="0.5"
+               relationship="right"
+               relative="org.eclipse.ui.views.ProblemView">
          </view>
       </perspectiveExtension>
    </extension>
@@ -170,6 +186,17 @@
             name="Tools"
             restorable="true">
       </view>
+      <category
+            id="customplugin.view.rmcrcview"
+            name="customplugin.category">
+      </category>
+      <view
+            category="customplugin.view.rmcrcview"
+            class="customplugin.views.CustomViewer"
+            icon="icons/sample.gif"
+            id="customplugin.views.CustomViewer"
+            name="RmCRCView">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
@@ -192,6 +219,19 @@
             id="customplugin.editorID"
             name="Editor">
       </editor>
+      <editor
+            class="customplugin.editor.MultiPageEditor"
+            contributorClass="customplugin.editor.MultiPageEditorContributor"
+            extensions="icns"
+            id="customplugin.multiEditor"
+            name="Multi Editor">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="contexts.xml">
+      </contexts>
    </extension>
 
 </plugin>
