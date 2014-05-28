@@ -2,17 +2,11 @@ package customplugin.editor;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
 
 public class CustomEditor extends EditorPart {
@@ -34,7 +28,7 @@ public class CustomEditor extends EditorPart {
 		// TODO Auto-generated method stub
 
 	}
-
+	
 	@Override
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {

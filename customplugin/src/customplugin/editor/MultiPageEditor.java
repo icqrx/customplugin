@@ -6,11 +6,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
@@ -22,6 +18,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
+
+import customplugin.view.LayoutViewManager;
 
 /**
  * This class support multi editor
@@ -43,8 +41,8 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 
 	@Override
 	protected void createPages() {
-		createPage0();
 		createPage1();
+		createPage0();
 	}
 
 	@Override
@@ -110,6 +108,7 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 	
 	/**
 	 * Creates page 0 of the multi-page editor, which contains a text editor.
+	 * Source code
 	 */
 	void createPage0() {
 		try {
@@ -124,19 +123,19 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 
 	/**
 	 * Creates page 1 of the multi-page editor,
-	 * 
+	 * Layout
 	 */
 	void createPage1() {
 
-		Composite composite = new Composite(getContainer(), SWT.NONE);
+		final Composite composite = new Composite(getContainer(), SWT.NONE);
 		GridLayout layout = new GridLayout();
 		composite.setLayout(layout);
-		layout.numColumns = 2;
-
-//		ViewManager v = new ViewManager();
-//		v.createPartControl(composite);
-
+		
+		LayoutViewManager v = new LayoutViewManager();
+		v.createPartControl(composite);
+		
 		int index = addPage(composite);
+	
 		setPageText(index, "Layout");
 	}
 

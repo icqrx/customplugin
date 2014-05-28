@@ -197,6 +197,20 @@
             id="customplugin.views.CustomViewer"
             name="RmCRCView">
       </view>
+      <view
+            class="customplugin.view.LayoutViewManager"
+            id="customplugin.views.layoutView"
+            name="Layout View"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="true"
+            category="customplugin.view.toolbox"
+            class="customplugin.view.PropertiesManager"
+            id="customplugin.view.properties"
+            name="Properties"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
@@ -232,6 +246,17 @@
       <contexts
             file="contexts.xml">
       </contexts>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.ui.resourcePerspective">
+         <view
+               id="customplugin.views.CustomViewer"
+               relationship="stack"
+               relative="org.eclipse.ui.views.ContentOutline">
+         </view>
+      </perspectiveExtension>
    </extension>
 
 </plugin>

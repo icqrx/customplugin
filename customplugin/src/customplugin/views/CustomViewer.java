@@ -1,7 +1,5 @@
 package customplugin.views;
 
-import java.awt.dnd.DragSourceListener;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -24,16 +22,29 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSourceAdapter;
 import org.eclipse.swt.dnd.DragSourceEvent;
+import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.DropTargetListener;
+import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.model.BaseWorkbenchContentProvider;
+import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.part.EditorInputTransfer;
 import org.eclipse.ui.part.ViewPart;
+
+import customplugin.view.properties.AdaptableList;
+import customplugin.view.properties.ButtonElement;
 
 /**
  * This sample class demonstrates how to plug-in a new workbench view. The view
@@ -78,7 +89,7 @@ public class CustomViewer extends ViewPart {
 		}
 
 		public Object[] getElements(Object parent) {
-			return new String[] { "One", "Two", "Three" };
+			return new String[] {  };
 		}
 	}
 
@@ -111,73 +122,95 @@ public class CustomViewer extends ViewPart {
 	 * This is a callback that will allow us to create the viewer and initialize
 	 * it.
 	 */
-	public void createPartControl(Composite parent) {
-		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
-				| SWT.V_SCROLL);
-		viewer.setContentProvider(new ViewContentProvider());
-		viewer.setLabelProvider(new ViewLabelProvider());
-		viewer.setSorter(new NameSorter());
-		viewer.setInput(getViewSite());
-		this.initDragAndDrop(viewer);
-
+	private AdaptableList ctlList;
+	private Group grp1;
+	
+	public void createPartControl(final Composite parent) {
+		viewer = new TableViewer(parent, SWT.SINGLE );
+		RowLayout rowLayout = new RowLayout();
+		parent.setLayout(rowLayout);
+		viewer.setContentProvider(new BaseWorkbenchContentProvider());
+		viewer.setLabelProvider(new WorkbenchLabelProvider());
+		// fill in the element		
+//		grp1 = new Group (parent,SWT.NONE);
+//		grp1.setText("Preview");		
+//		grp1.setLayout(rowLayout);
+		
+//		Button btn = new Button(grp1,SWT.PUSH);
+//		btn.setText("Hello");
+//		Button btn1 = new Button(grp1,SWT.PUSH);
+//		btn.setText("Hello111111111");
+		ctlList = new AdaptableList();
+//		ButtonElement btnEl = new ButtonElement(btn,"Button");
+//		ButtonElement btnEl1 = new ButtonElement(btn1,"Button");
+//		ctlList.add(btnEl);
+//		ctlList.add(btnEl1);
+//		
+//		viewer.setInput(ctlList);
+		
+		//viewer.setInput(getViewSite());
+		this.createDropTarget(parent, viewer);
+		getSite().setSelectionProvider(viewer);
 		// Create the help context id for the viewer's control
 		PlatformUI.getWorkbench().getHelpSystem()
 				.setHelp(viewer.getControl(), "customplugin.viewer");
-		makeActions();
-		hookContextMenu();
-		hookDoubleClickAction();
-		contributeToActionBars();
+		//makeActions();
+		//hookContextMenu();
+		//hookDoubleClickAction();
+		//contributeToActionBars();
 	}
-
-	protected void initDragAndDrop(final StructuredViewer viewer) {
-		int operations = DND.DROP_COPY | DND.DROP_DEFAULT;
-		Transfer[] transferTypes = new Transfer[] { EditorInputTransfer
-				.getInstance() };
-
-		DragSourceAdapter listener = new DragSourceAdapter() {
+	public void createDropTarget (final Composite parent, final TableViewer viewer) {
+		//	// Allow data to be copied or moved to the drop target
+		int operations = DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_DEFAULT;
+		DropTarget target = new DropTarget(viewer.getControl(), operations);
+		
+		// Receive data in Text or File format
+		Transfer[] types = new Transfer[] { TextTransfer.getInstance() };
+		target.setTransfer(types);
+		target.addDropListener(new DropTargetListener() {
+			
 			@Override
-			public void dragStart(DragSourceEvent event) {
-				IStructuredSelection selection = (IStructuredSelection) viewer
-						.getSelection();
-				event.doit = (selection.size() > 0) ? true : false;
+			public void dropAccept(DropTargetEvent event) {
 			}
-
+			
 			@Override
-			public void dragSetData(DragSourceEvent event) {
-				if (EditorInputTransfer.getInstance().isSupportedType(
-						event.dataType)) {
-					IStructuredSelection selection = (IStructuredSelection) viewer
-							.getSelection();
-					Object[] selectedObjects = selection.toArray();
-					if (selectedObjects.length > 0) {
-						EditorInputTransfer.EditorInputData[] inputs = new EditorInputTransfer.EditorInputData[selectedObjects.length];
-//						for (int i = 0; i < selectedObjects.length; i++) {
-//							if (selectedObjects[i] instanceof Question) {
-//								Question q = (Question) selectedObjects[i];
-//								EditorInputTransfer.EditorInputData data = EditorInputTransfer
-//										.createEditorInputData(
-//												QuestionEditor.ID,
-//												new QuestionEditorInput(q));
-//								if (data != null) {
-//									inputs[i] = data;
-//								}
-//							}
-//						}
-						event.data = inputs;
-						return;
-					}
+			public void drop(DropTargetEvent event) {
+				 String data = (String) event.data;
+				 System.out.print(data);
+				 
+				if (data.equalsIgnoreCase("TextView")) {
+					Label label = new Label(parent, SWT.BORDER);
+					label.setText(data);
+				} else if (data.equalsIgnoreCase("Button")) {
+					Button btn = new Button(parent, SWT.BORDER);
+					btn.setText(data);
+					ButtonElement btnEl = new ButtonElement(btn, data);
+					ctlList.add(btnEl);
+					viewer.setInput(ctlList);
 				}
-				event.doit = false;
+				parent.pack();
+				parent.layout(true);
+		
 			}
-
+			
 			@Override
-			public void dragFinished(DragSourceEvent event) {
-				// event.detail is set to DND.DROP_NONE if user dropped
-				// data on invalid location or canceled operation.
+			public void dragOver(DropTargetEvent event) {
 			}
-		};
-		viewer.addDragSupport(operations, transferTypes, listener);
+			
+			@Override
+			public void dragOperationChanged(DropTargetEvent event) {
+			}
+			
+			@Override
+			public void dragLeave(DropTargetEvent event) {
+			}
+			
+			@Override
+			public void dragEnter(DropTargetEvent event) {
+			}
+		});
 	}
+	
 
 	private void hookContextMenu() {
 		MenuManager menuMgr = new MenuManager("#PopupMenu");
