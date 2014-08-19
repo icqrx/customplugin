@@ -17,19 +17,19 @@ public class WizardSchemaNewFileCreationPage extends WizardNewFileCreationPage {
 	 * @param selection
 	 */
 	public WizardSchemaNewFileCreationPage(IStructuredSelection selection) {
-		super("RmCRC Plug-in Schema File Wizard", selection);
+		super("RmCRC Plug-in Layout File Wizard", selection);
 
-		setTitle("RmCRC Schema File Wizard");
-		setDescription("Create a Schema File");
-		setFileExtension("xml");
+		setTitle("RmCRC Layout File Wizard");
+		setDescription("Create a Layout File");
+		setFileExtension("html");
 	}
 
 	@Override
 	protected InputStream getInitialContents() {
 		
-		String xmlTemplate = "<rmcrc-schema>\n" + "  <tables></tables>\n"
-				+ "  <filters></filters>\n" + "  <views></views>\n"
-				+ "</rmcrc-schema>\n";
+		String xmlTemplate = "<html>" + "<header><title>This is title</title></header>"
+				+ "<body onload=" + '"'+"window.location='http://163.180.117.219:8081/maqetta'" + '"' + ">" 
+		+ "</body>" + "</html>";
 		return new ByteArrayInputStream(xmlTemplate.getBytes());
 		
 		// Or create a new file with xml structure

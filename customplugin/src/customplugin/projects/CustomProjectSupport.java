@@ -16,13 +16,16 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.swt.browser.Browser;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.browser.IWebBrowser;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.internal.browser.WorkbenchBrowserSupport;
 import org.eclipse.ui.part.FileEditorInput;
 
 import customplugin.natures.ProjectNature;
@@ -55,7 +58,8 @@ public class CustomProjectSupport {
                     };
             addToProjectStructure(project, paths);
             // open brower to load maqetta
-            loadBrowser();
+            //loadBrowser();
+            loadInternalBrowser();
         } catch (Exception e) {
             e.printStackTrace();
             project = null;
@@ -70,7 +74,18 @@ public class CustomProjectSupport {
      */
     public static void loadBrowser() throws PartInitException, MalformedURLException {
     	   IWorkbenchBrowserSupport browserSupport = PlatformUI.getWorkbench().getBrowserSupport();
-           browserSupport.getExternalBrowser().openURL(new URL("http://163.180.117.219:50000/"));
+           browserSupport.getExternalBrowser().openURL(new URL("http://163.180.117.219:8081/maqetta"));
+    }
+    /**
+     * 
+     * @throws PartInitException
+     * @throws MalformedURLException
+     */
+    public static void loadInternalBrowser() throws PartInitException, MalformedURLException {
+    	int style =  IWorkbenchBrowserSupport.STATUS; //IWorkbenchBrowserSupport.AS_EDITOR | IWorkbenchBrowserSupport.LOCATION_BAR | ==> hide link address
+    	@SuppressWarnings("restriction")
+		IWebBrowser browser = WorkbenchBrowserSupport.getInstance().createBrowser(style, "org.eclipse.ui.browser.firefox", "MyBrowserName", "MyBrowser Tooltip");
+    	browser.openURL(new URL("http://163.180.117.219:8081/maqetta"));
     }
     /**
      * Just do the basics: create a basic project.
@@ -144,7 +159,7 @@ public class CustomProjectSupport {
      * @throws MalformedURLException 
      */
     private static void createDesignFile(IFolder etcFolders) throws MalformedURLException {
-		IFile designFile = etcFolders.getFile("gui.html");
+		IFile designFile = etcFolders.getFile("index.html");
 		if (!designFile.exists()) {
 		    try {
 				byte[] bytes = "File contents".getBytes();
